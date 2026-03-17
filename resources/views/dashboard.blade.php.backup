@@ -1,0 +1,350 @@
+<x-platform-layout>
+    <x-page-header title="Dashboard Platform" description="Kelola yayasan dan pantau kinerja platform dengan mudah" />
+
+    {{-- Statistics Cards --}}
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+        <x-stat-card 
+            title="Total Yayasan" 
+            value="{{ \App\Models\Foundation::count() }}" 
+            href="{{ route('platform.foundations.index') }}"
+            color="primary"
+            trend="BULAN INI"
+            trendValue="+12%"
+            description="+{{ \App\Models\Foundation::whereMonth('created_at', now()->month)->count() }} yayasan baru"
+        >
+            <svg class="w-10 h-10 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"/>
+            </svg>
+        </x-stat-card>
+
+        <x-stat-card 
+            title="Total Sekolah" 
+            value="{{ \App\Models\SchoolUnit::count() }}" 
+            href="{{ route('platform.schools.index') }}"
+            color="secondary"
+            trend="GROWTH"
+            trendValue="+18%"
+            description="{{ \App\Models\SchoolUnit::where('status', 'active')->count() }} aktif"
+        >
+            <svg class="w-10 h-10 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 14v3m4-3v3m4-3v3M3 21h18M3 10h18M3 7l9-4 9 4M4 10h16v11H4V10z"/>
+            </svg>
+        </x-stat-card>
+
+        <x-stat-card 
+            title="Total Siswa" 
+            value="{{ \App\Models\Student::count() }}" 
+            href="{{ route('platform.students.index') }}"
+            color="success"
+            trend="BULAN INI"
+            trendValue="+25%"
+            description="+{{ \App\Models\Student::whereMonth('created_at', now()->month)->count() }} pendaftaran"
+        >
+            <svg class="w-10 h-10 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"/>
+            </svg>
+        </x-stat-card>
+
+        <x-stat-card 
+            title="Yayasan Aktif" 
+            value="{{ \App\Models\Foundation::whereIn('status', ['trial', 'active'])->count() }}" 
+            href="{{ route('platform.foundations.index', ['status' => 'active']) }}"
+            color="warning"
+            trend="PENDING"
+            trendValue="{{ \App\Models\Foundation::where('status', 'pending')->count() }}"
+            description="{{ round(\App\Models\Foundation::whereIn('status', ['trial', 'active'])->count() / max(\App\Models\Foundation::count(), 1) * 100) }}% dari total"
+        >
+            <svg class="w-10 h-10 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>
+            </svg>
+        </x-stat-card>
+    </div>
+
+    {{-- Additional Platform Statistics --}}
+    <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
+        <x-card title="Statistik Langganan" description="Monitor status langganan yayasan">
+            <div class="grid grid-cols-2 gap-4">
+                <div class="text-center p-4 bg-emerald-50 rounded-xl">
+                    <p class="text-2xl font-bold text-emerald-600">{{ \App\Models\Foundation::where('status', 'active')->count() }}</p>
+                    <p class="text-sm text-gray-600">Langganan Aktif</p>
+                </div>
+                <div class="text-center p-4 bg-blue-50 rounded-xl">
+                    <p class="text-2xl font-bold text-blue-600">{{ \App\Models\Foundation::where('status', 'trial')->count() }}</p>
+                    <p class="text-sm text-gray-600">Trial Aktif</p>
+                </div>
+                <div class="text-center p-4 bg-amber-50 rounded-xl">
+                    <p class="text-2xl font-bold text-amber-600">{{ \App\Models\Foundation::where('status', 'expired')->count() }}</p>
+                    <p class="text-sm text-gray-600">Kadaluarsa</p>
+                </div>
+                <div class="text-center p-4 bg-purple-50 rounded-xl">
+                    <p class="text-2xl font-bold text-purple-600">{{ \App\Models\Plan::count() }}</p>
+                    <p class="text-sm text-gray-600">Paket Langganan</p>
+                </div>
+            </div>
+        </x-card>
+
+        <x-card title="Statistik Pengguna" description="Monitor pengguna platform">
+            <div class="grid grid-cols-2 gap-4">
+                <div class="text-center p-4 bg-blue-50 rounded-xl">
+                    <p class="text-2xl font-bold text-blue-600">{{ \App\Models\User::count() }}</p>
+                    <p class="text-sm text-gray-600">Total Users</p>
+                </div>
+                <div class="text-center p-4 bg-green-50 rounded-xl">
+                    <p class="text-2xl font-bold text-green-600">{{ \App\Models\User::where('email_verified_at', '!=', null)->count() }}</p>
+                    <p class="text-sm text-gray-600">Terverifikasi</p>
+                </div>
+                <div class="text-center p-4 bg-amber-50 rounded-xl">
+                    <p class="text-2xl font-bold text-amber-600">{{ \App\Models\User::where('email_verified_at', null)->count() }}</p>
+                    <p class="text-sm text-gray-600">Belum Verifikasi</p>
+                </div>
+                <div class="text-center p-4 bg-purple-50 rounded-xl">
+                    <p class="text-2xl font-bold text-purple-600">{{ \App\Models\LoginLog::where('login_at', '>=', now()->subDays(7))->distinct('user_id')->count() }}</p>
+                    <p class="text-sm text-gray-600">Aktif 7 Hari</p>
+                </div>
+            </div>
+        </x-card>
+    </div>
+
+    <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+        <x-card title="Aktivitas Terkini" description="Update terbaru dari yayasan" class="lg:col-span-2">
+            <div class="space-y-3">
+                @php
+                    $recentFoundations = \App\Models\Foundation::latest()->take(8)->get();
+                @endphp
+                @if($recentFoundations->count() > 0)
+                    @foreach($recentFoundations as $foundation)
+                        <div class="group flex items-start gap-4 p-4 rounded-2xl bg-white border border-gray-100 hover:border-primary-200 hover:shadow-md transition-all duration-300">
+                            <div class="relative">
+                                <div class="w-12 h-12 bg-gradient-to-br from-primary-500 to-primary-600 rounded-2xl flex items-center justify-center flex-shrink-0 shadow-lg">
+                                    <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"/>
+                                    </svg>
+                                </div>
+                                <div class="absolute -bottom-1 -right-1 w-4 h-4 bg-green-500 rounded-full border-2 border-white group-hover:scale-110 transition-transform duration-300"></div>
+                            </div>
+                            <div class="flex-1 min-w-0">
+                                <div class="flex items-start justify-between gap-3">
+                                    <div class="flex-1">
+                                        <p class="font-semibold text-gray-900 text-sm mb-1 group-hover:text-primary-600 transition-colors">{{ $foundation->name }}</p>
+                                        <div class="flex items-center gap-3 text-xs text-gray-500">
+                                            <span class="flex items-center gap-1">
+                                                <svg class="w-3 h-3" fill="currentColor" viewBox="0 0 20 20">
+                                                    <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm1-12a1 1 0 10-2 0v4a1 1 0 00.293.707l2.828 2.829a1 1 0 101.415-1.415L11 9.586V6z" clip-rule="evenodd"/>
+                                                </svg>
+                                                {{ $foundation->created_at->diffForHumans() }}
+                                            </span>
+                                            <span class="text-gray-300">•</span>
+                                            <span>{{ $foundation->created_at->format('d M Y') }}</span>
+                                        </div>
+                                    </div>
+                                    <div class="flex-shrink-0">
+                                        @switch($foundation->status)
+                                            @case('active')
+                                                <span class="inline-flex items-center px-3 py-1.5 rounded-full text-xs font-semibold bg-gradient-to-r from-green-50 to-emerald-50 text-green-700 border border-green-200 shadow-sm">Aktif</span>
+                                                @break
+                                            @case('pending')
+                                                <span class="inline-flex items-center px-3 py-1.5 rounded-full text-xs font-semibold bg-gradient-to-r from-amber-50 to-orange-50 text-amber-700 border border-amber-200 shadow-sm animate-pulse">Pending</span>
+                                                @break
+                                            @case('trial')
+                                                <span class="inline-flex items-center px-3 py-1.5 rounded-full text-xs font-semibold bg-gradient-to-r from-blue-50 to-indigo-50 text-blue-700 border border-blue-200 shadow-sm">Trial</span>
+                                                @break
+                                            @default
+                                                <span class="inline-flex items-center px-3 py-1.5 rounded-full text-xs font-semibold bg-gradient-to-r from-gray-50 to-slate-50 text-gray-700 border border-gray-200 shadow-sm">{{ $foundation->status }}</span>
+                                        @endswitch
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    @endforeach
+                @else
+                    <div class="text-center py-12">
+                        <div class="w-20 h-20 bg-gray-100 rounded-3xl flex items-center justify-center mx-auto mb-4">
+                            <svg class="w-10 h-10 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
+                            </svg>
+                        </div>
+                        <p class="text-gray-500 font-medium">Belum ada aktivitas</p>
+                        <p class="text-gray-400 text-sm mt-1">Yayasan baru akan muncul di sini</p>
+                    </div>
+                @endif
+            </div>
+            
+            @if($recentFoundations->count() > 0)
+                <div class="mt-6 pt-6 border-t border-gray-100">
+                    <x-button href="{{ route('platform.foundations.index') }}" variant="outline" size="sm">
+                        Lihat semua aktivitas
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/>
+                        </svg>
+                    </x-button>
+                </div>
+            @endif
+        </x-card>
+
+        <x-card title="Kesehatan Sistem" description="Monitor performa platform">
+            <div class="space-y-4">
+                {{-- Database Status --}}
+                <div class="group">
+                    <div class="flex items-center justify-between mb-2">
+                        <div class="flex items-center gap-2">
+                            <div class="w-8 h-8 bg-gradient-to-br from-green-50 to-emerald-50 rounded-xl flex items-center justify-center">
+                                <svg class="w-4 h-4 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 7v10c0 2.21 3.582 4 8 4s8-1.79 8-4V7M4 7c0 2.21 3.582 4 8 4s8-1.79 8-4M4 7c0-2.21 3.582-4 8-4s8 1.79 8 4"/>
+                                </svg>
+                            </div>
+                            <span class="text-sm font-semibold text-gray-700">Database</span>
+                        </div>
+                        <div class="flex items-center gap-2">
+                            <div class="w-2 h-2 bg-green-500 rounded-full animate-pulse shadow-sm"></div>
+                            <span class="text-sm font-bold text-green-600">Normal</span>
+                        </div>
+                    </div>
+                    <div class="h-2 bg-gray-200 rounded-full overflow-hidden">
+                        <div class="h-full bg-gradient-to-r from-green-400 to-green-500 rounded-full" style="width: 95%"></div>
+                    </div>
+                </div>
+
+                {{-- Storage Status --}}
+                <div class="group">
+                    <div class="flex items-center justify-between mb-2">
+                        <div class="flex items-center gap-2">
+                            <div class="w-8 h-8 bg-gradient-to-br from-blue-50 to-indigo-50 rounded-xl flex items-center justify-center">
+                                <svg class="w-4 h-4 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 8h14M5 8a2 2 0 110-4h14a2 2 0 110 4M5 8v10a2 2 0 002 2h10a2 2 0 002-2V8m-9 4h4"/>
+                                </svg>
+                            </div>
+                            <span class="text-sm font-semibold text-gray-700">Storage</span>
+                        </div>
+                        <div class="flex items-center gap-2">
+                            <div class="w-2 h-2 bg-green-500 rounded-full animate-pulse shadow-sm"></div>
+                            <span class="text-sm font-bold text-green-600">85%</span>
+                        </div>
+                    </div>
+                    <div class="h-2 bg-gray-200 rounded-full overflow-hidden">
+                        <div class="h-full bg-gradient-to-r from-blue-400 to-blue-500 rounded-full" style="width: 85%"></div>
+                    </div>
+                </div>
+
+                {{-- Memory Status --}}
+                <div class="group">
+                    <div class="flex items-center justify-between mb-2">
+                        <div class="flex items-center gap-2">
+                            <div class="w-8 h-8 bg-gradient-to-br from-amber-50 to-orange-50 rounded-xl flex items-center justify-center">
+                                <svg class="w-4 h-4 text-amber-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.75 17L9 20l-1 1h8l-1-1-.75-3M3 13h18M5 17h14a2 2 0 002-2V5a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/>
+                                </svg>
+                            </div>
+                            <span class="text-sm font-semibold text-gray-700">Memory</span>
+                        </div>
+                        <div class="flex items-center gap-2">
+                            <div class="w-2 h-2 bg-amber-500 rounded-full animate-pulse shadow-sm"></div>
+                            <span class="text-sm font-bold text-amber-600">72%</span>
+                        </div>
+                    </div>
+                    <div class="h-2 bg-gray-200 rounded-full overflow-hidden">
+                        <div class="h-full bg-gradient-to-r from-amber-400 to-amber-500 rounded-full" style="width: 72%"></div>
+                    </div>
+                </div>
+
+                {{-- Overall Status --}}
+                <div class="mt-6 pt-4 border-t border-gray-200">
+                    <div class="flex items-center justify-between mb-3">
+                        <span class="text-sm font-semibold text-gray-700">Uptime</span>
+                        <span class="text-lg font-bold text-gray-900">99.9%</span>
+                    </div>
+                    <div class="text-center bg-gradient-to-r from-green-50 to-emerald-50 rounded-xl p-3">
+                        <div class="flex items-center justify-center gap-2">
+                            <div class="w-3 h-3 bg-green-500 rounded-full animate-pulse shadow-lg"></div>
+                            <span class="text-sm font-bold text-green-700">System Online</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="mt-6 pt-4 border-t border-gray-200">
+                <div class="text-center">
+                    <p class="text-xs text-gray-500 mb-1">Last Check</p>
+                    <p class="text-sm font-bold text-gray-900">{{ now()->format('H:i:s') }}</p>
+                    <p class="text-xs text-gray-400">{{ now()->format('d M Y') }}</p>
+                </div>
+            </div>
+        </x-card>
+    </div>
+
+    <x-card title="Menu Cepat" description="Akses cepat ke fitur utama">
+        <div class="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-4">
+            <a href="{{ route('platform.foundations.index') }}" class="group relative">
+                <div class="p-6 text-center bg-white border border-gray-200 rounded-xl hover:border-primary-300 hover:shadow-xl transition-all duration-300">
+                    <div class="w-16 h-16 bg-gradient-to-br from-blue-100 to-blue-200 rounded-2xl flex items-center justify-center mb-4 mx-auto group-hover:scale-110 transition-transform duration-300">
+                        <svg class="w-8 h-8 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"/>
+                        </svg>
+                    </div>
+                    <h4 class="font-semibold text-gray-900 mb-1">Kelola Yayasan</h4>
+                    <p class="text-xs text-gray-500">Data yayasan</p>
+                </div>
+            </a>
+            
+            <a href="{{ route('platform.users.index') }}" class="group relative">
+                <div class="p-6 text-center bg-white border border-gray-200 rounded-xl hover:border-primary-300 hover:shadow-xl transition-all duration-300">
+                    <div class="w-16 h-16 bg-gradient-to-br from-green-100 to-green-200 rounded-2xl flex items-center justify-center mb-4 mx-auto group-hover:scale-110 transition-transform duration-300">
+                        <svg class="w-8 h-8 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z"/>
+                        </svg>
+                    </div>
+                    <h4 class="font-semibold text-gray-900 mb-1">Kelola User</h4>
+                    <p class="text-xs text-gray-500">Manajemen user</p>
+                </div>
+            </a>
+            
+            <a href="{{ route('platform.schools.index') }}" class="group relative">
+                <div class="p-6 text-center bg-white border border-gray-200 rounded-xl hover:border-primary-300 hover:shadow-xl transition-all duration-300">
+                    <div class="w-16 h-16 bg-gradient-to-br from-purple-100 to-purple-200 rounded-2xl flex items-center justify-center mb-4 mx-auto group-hover:scale-110 transition-transform duration-300">
+                        <svg class="w-8 h-8 text-purple-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 14v3m4-3v3m4-3v3M3 21h18M3 10h18M3 7l9-4 9 4M4 10h16v11H4V10z"/>
+                        </svg>
+                    </div>
+                    <h4 class="font-semibold text-gray-900 mb-1">Data Sekolah</h4>
+                    <p class="text-xs text-gray-500">Unit sekolah</p>
+                </div>
+            </a>
+            
+            <a href="{{ route('platform.students.index') }}" class="group relative">
+                <div class="p-6 text-center bg-white border border-gray-200 rounded-xl hover:border-primary-300 hover:shadow-xl transition-all duration-300">
+                    <div class="w-16 h-16 bg-gradient-to-br from-indigo-100 to-indigo-200 rounded-2xl flex items-center justify-center mb-4 mx-auto group-hover:scale-110 transition-transform duration-300">
+                        <svg class="w-8 h-8 text-indigo-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"/>
+                        </svg>
+                    </div>
+                    <h4 class="font-semibold text-gray-900 mb-1">Data Siswa</h4>
+                    <p class="text-xs text-gray-500">Data siswa</p>
+                </div>
+            </a>
+            
+            <a href="{{ route('platform.settings.index') }}" class="group relative">
+                <div class="p-6 text-center bg-white border border-gray-200 rounded-xl hover:border-primary-300 hover:shadow-xl transition-all duration-300">
+                    <div class="w-16 h-16 bg-gradient-to-br from-amber-100 to-amber-200 rounded-2xl flex items-center justify-center mb-4 mx-auto group-hover:scale-110 transition-transform duration-300">
+                        <svg class="w-8 h-8 text-amber-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.066 2.573c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.573 1.066c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.066-2.573c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"/>
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/>
+                        </svg>
+                    </div>
+                    <h4 class="font-semibold text-gray-900 mb-1">Pengaturan</h4>
+                    <p class="text-xs text-gray-500">Konfigurasi</p>
+                </div>
+            </a>
+            
+            <a href="/" class="group relative">
+                <div class="p-6 text-center bg-white border border-gray-200 rounded-xl hover:border-primary-300 hover:shadow-xl transition-all duration-300">
+                    <div class="w-16 h-16 bg-gradient-to-br from-rose-100 to-rose-200 rounded-2xl flex items-center justify-center mb-4 mx-auto group-hover:scale-110 transition-transform duration-300">
+                        <svg class="w-8 h-8 text-rose-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"/>
+                        </svg>
+                    </div>
+                    <h4 class="font-semibold text-gray-900 mb-1">Beranda</h4>
+                    <p class="text-xs text-gray-500">Landing page</p>
+                </div>
+            </a>
+        </div>
+    </x-card>
+</x-platform-layout>

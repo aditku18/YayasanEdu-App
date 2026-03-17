@@ -1,0 +1,1289 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Daftar Yayasan - Upload Dokumen</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: {
+                            50: '#f0f9ff',
+                            100: '#e0f2fe',
+                            200: '#bae6fd',
+                            300: '#7dd3fc',
+                            400: '#38bdf8',
+                            500: '#0ea5e9',
+                            600: '#0284c7',
+                            700: '#0369a1',
+                            800: '#075985',
+                            900: '#0c4a6e',
+                        },
+                        accent: {
+                            50: '#fdf4ff',
+                            100: '#fae8ff',
+                            500: '#d946ef',
+                            600: '#c026d3',
+                        }
+                    },
+                    fontFamily: {
+                        sans: ['Inter', 'system-ui', 'sans-serif'],
+                    },
+                    boxShadow: {
+                        'soft': '0 2px 15px -3px rgba(0, 0, 0, 0.07), 0 10px 20px -2px rgba(0, 0, 0, 0.04)',
+                        'glow': '0 0 20px rgba(14, 165, 233, 0.15)',
+                    },
+                    animation: {
+                        'float': 'float 3s ease-in-out infinite',
+                        'pulse-slow': 'pulse 3s cubic-bezier(0.4, 0, 0.6, 1) infinite',
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap');
+        body { font-family: 'Inter', sans-serif; }
+        
+        /* Custom scrollbar */
+        ::-webkit-scrollbar { width: 8px; height: 8px; }
+        ::-webkit-scrollbar-track { background: #f8fafc; }
+        ::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 4px; }
+        ::-webkit-scrollbar-thumb:hover { background: #94a3b8; }
+        
+        /* Step indicator animations */
+        .step-enter { animation: stepEnter 0.4s ease-out; }
+        @keyframes stepEnter {
+            from { opacity: 0; transform: translateX(20px); }
+            to { opacity: 1; transform: translateX(0); }
+        }
+        
+        @keyframes float {
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(-5px); }
+        }
+        
+        /* File upload zone */
+        .upload-zone {
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            border: 2px dashed #e2e8f0;
+        }
+        .upload-zone:hover, .upload-zone.dragover {
+            border-color: #0ea5e9;
+            background-color: #f0f9ff;
+            transform: scale(1.01);
+        }
+        
+        /* Price animation */
+        .price-animate {
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        
+        /* Password strength */
+        .strength-bar { transition: width 0.3s ease, background-color 0.3s ease; }
+        
+        /* Custom checkbox */
+        .custom-checkbox:checked + div {
+            background-color: #0ea5e9;
+            border-color: #0ea5e9;
+        }
+        
+        /* Card selection */
+        .plan-card.selected {
+            border-color: #0ea5e9;
+            background-color: #f0f9ff;
+            box-shadow: 0 0 0 2px #0ea5e9;
+        }
+        
+        /* Plugin toggle */
+        .plugin-toggle:checked + .plugin-track {
+            background-color: #0ea5e9;
+        }
+        
+        /* Sticky summary */
+        .sticky-summary {
+            position: sticky;
+            top: 100px;
+        }
+        
+        /* Focus visible for accessibility */
+        :focus-visible {
+            outline: 2px solid #0ea5e9;
+            outline-offset: 2px;
+        }
+        
+        /* Multi-select dropdown */
+        .multi-select-option {
+            transition: background-color 0.15s ease;
+        }
+        .multi-select-option:hover {
+            background-color: #f1f5f9;
+        }
+        .multi-select-option.selected {
+            background-color: #f0f9ff;
+        }
+        
+        /* Gradient text */
+        .text-gradient {
+            background: linear-gradient(135deg, #0ea5e9 0%, #0284c7 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        
+        /* Input focus improvements */
+        .input-modern:focus {
+            box-shadow: 0 0 0 3px rgba(14, 165, 233, 0.15);
+        }
+        
+        /* Button shine effect */
+        .btn-shine {
+            position: relative;
+            overflow: hidden;
+        }
+        .btn-shine::after {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -100%;
+            width: 50%;
+            height: 200%;
+            background: linear-gradient(
+                to right,
+                rgba(255, 255, 255, 0) 0%,
+                rgba(255, 255, 255, 0.3) 50%,
+                rgba(255, 255, 255, 0) 100%
+            );
+            transform: skewX(-25deg);
+            transition: left 0.5s;
+        }
+        .btn-shine:hover::after {
+            left: 150%;
+        }
+        
+        /* Glass effect */
+        .glass {
+            background: rgba(255, 255, 255, 0.8);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+        }
+        
+        /* Input light style */
+        .input-light {
+            background-color: #ffffff;
+            border: 1px solid #e2e8f0;
+            transition: all 0.3s ease;
+            padding: 12px 16px;
+            border-radius: 12px;
+            width: 100%;
+            font-size: 14px;
+        }
+        
+        .input-light:focus {
+            border-color: #3b82f6;
+            box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+            outline: none;
+        }
+        
+        .input-light::placeholder {
+            color: #9ca3af;
+        }
+        
+        /* Input modern style */
+        .input-modern {
+            background-color: #f8fafc;
+            border: 1px solid #e2e8f0;
+            transition: all 0.3s ease;
+            padding: 14px 16px;
+            border-radius: 12px;
+            width: 100%;
+            font-size: 14px;
+        }
+        
+        .input-modern:focus {
+            border-color: #0ea5e9;
+            box-shadow: none;
+            outline: none;
+            background-color: #ffffff;
+        }
+        
+        .input-modern::placeholder {
+            color: #94a3b8;
+        }
+        
+        .input-modern:hover {
+            background-color: #ffffff;
+        }
+        
+        /* Ring styles for focus states */
+        .ring-primary-100 {
+            --tw-ring-color: rgb(219 234 254);
+        }
+        
+        .ring-primary-500 {
+            --tw-ring-color: rgb(59 130 246);
+        }
+        
+        /* Ensure step 5 visibility */
+        [x-show="step === 5"] {
+            display: block !important;
+        }
+        
+        /* Ensure step 1 visibility */
+        [x-show="step === 1"] {
+            display: block !important;
+        }
+        
+        /* Ensure all steps are visible initially */
+        [x-show^="step"] {
+            display: block !important;
+        }
+        
+        /* Step enter animation */
+        .step-enter {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    </style>
+</head>
+<body class="bg-gradient-to-br from-slate-50 via-blue-50 to-sky-100 min-h-screen" x-data="registrationWizard()" x-init="init()">
+
+    <!-- Header -->
+    <header class="bg-white/80 backdrop-blur-md shadow-sm border-b border-slate-200/50 sticky top-0 z-50">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
+            <div class="flex items-center justify-between">
+                <a href="http://127.0.0.1:8000" class="flex items-center gap-3 group">
+                    <div class="w-12 h-12 bg-gradient-to-br from-sky-400 via-sky-500 to-sky-600 rounded-xl flex items-center justify-center shadow-lg group-hover:shadow-xl transition-all duration-300 group-hover:scale-105">
+                        <i class="fas fa-graduation-cap text-white text-xl"></i>
+                    </div>
+                    <div class="hidden sm:block">
+                        <span class="text-xl font-bold text-slate-800">Yayasan</span><span class="text-xl font-bold text-gradient">Edu</span>
+                        <p class="text-xs text-slate-500 -mt-1">Platform Manajemen Pendidikan</p>
+                    </div>
+                </a>
+                <div class="flex items-center gap-4">
+                    <div class="hidden md:flex items-center gap-2 text-sm text-slate-500 bg-slate-50 px-4 py-2 rounded-full">
+                        <i class="fas fa-phone-alt text-sky-500"></i>
+                        <span>(021) 1234-5678</span>
+                    </div>
+                    <a href="http://127.0.0.1:8000/login" class="text-sm font-medium text-slate-600 hover:text-sky-600 transition-colors flex items-center gap-2">
+                        <i class="fas fa-sign-in-alt"></i>
+                        <span>Masuk</span>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        <div class="flex flex-col lg:flex-row gap-8">
+            
+            <!-- Left Side - Form Wizard -->
+            <div class="flex-1">
+                <!-- Progress Steps -->
+                <div class="bg-white rounded-2xl shadow-soft border border-slate-200 p-6 mb-6 overflow-hidden relative">
+                    <!-- Decorative background -->
+                    <div class="absolute top-0 right-0 w-32 h-32 bg-gradient-to-br from-sky-100 to-transparent rounded-full -translate-y-1/2 translate-x-1/2 opacity-50"></div>
+                    
+                    <!-- Progress Bar -->
+                    <div class="mb-6 relative z-10">
+                        <div class="flex justify-between text-sm font-medium text-slate-500 mb-2">
+                            <span class="flex items-center gap-2">
+                                <i class="fas fa-tasks text-sky-500"></i>
+                                Progress
+                            </span>
+                            <span class="bg-sky-100 text-sky-700 px-2 py-0.5 rounded-full text-xs">33%</span>
+                        </div>
+                        <div class="w-full bg-slate-100 rounded-full h-2.5 overflow-hidden">
+                            <div class="bg-gradient-to-r from-sky-400 via-sky-500 to-sky-600 h-2.5 rounded-full transition-all duration-500 shadow-glow" :style="`width: ${(step / 6) * 100}%`"></div>
+                        </div>
+                    </div>
+                    
+                    <!-- Steps Indicator -->
+                    <nav aria-label="Progress" class="relative z-10">
+                        <ol class="flex items-center justify-between">
+                                                        <li class="relative flex-1 ">
+                                <button 
+                                    type="button"
+                                    @click="goToStep(1)"
+                                    :disabled="1 > step"
+                                    class="flex flex-col items-center gap-2 group"
+                                    
+                                >
+                                    <span class="relative flex h-11 w-11 items-center justify-center rounded-full transition-all duration-300 
+                                        bg-gradient-to-br from-sky-400 to-sky-600 text-white shadow-lg">
+                                                                                    <i class="fas fa-check text-sm"></i>
+                                                                            </span>
+                                    <span class="text-xs font-medium text-center hidden sm:block 
+                                        text-slate-700">
+                                                                                        Data Institusi
+                                                                                    </span>
+                                </button>
+                                                                <div class="hidden sm:block absolute top-5 left-1/2 w-full h-0.5 -translate-y-1/2 -z-10 
+                                    bg-gradient-to-r from-sky-400 to-sky-500"></div>
+                                                            </li>
+                                                        <li class="relative flex-1 ">
+                                <button 
+                                    type="button"
+                                    @click="goToStep(2)"
+                                    :disabled="2 > step"
+                                    class="flex flex-col items-center gap-2 group"
+                                    
+                                >
+                                    <span class="relative flex h-11 w-11 items-center justify-center rounded-full transition-all duration-300 
+                                        bg-gradient-to-br from-sky-400 to-sky-600 text-white shadow-glow ring-4 ring-sky-100">
+                                                                                    <span class="text-sm font-bold">2</span>
+                                                                            </span>
+                                    <span class="text-xs font-medium text-center hidden sm:block 
+                                        text-sky-600">
+                                                                                        Dokumen
+                                                                                    </span>
+                                </button>
+                                                                <div class="hidden sm:block absolute top-5 left-1/2 w-full h-0.5 -translate-y-1/2 -z-10 
+                                    bg-slate-200"></div>
+                                                            </li>
+                                                        <li class="relative flex-1 opacity-50">
+                                <button 
+                                    type="button"
+                                    @click="goToStep(3)"
+                                    :disabled="3 > step"
+                                    class="flex flex-col items-center gap-2 group"
+                                    disabled
+                                >
+                                    <span class="relative flex h-11 w-11 items-center justify-center rounded-full transition-all duration-300 
+                                        bg-slate-100 text-slate-400 group-hover:bg-slate-200">
+                                                                                    <span class="text-sm font-bold">3</span>
+                                                                            </span>
+                                    <span class="text-xs font-medium text-center hidden sm:block 
+                                        text-slate-400">
+                                                                                        Paket
+                                                                                    </span>
+                                </button>
+                                                                <div class="hidden sm:block absolute top-5 left-1/2 w-full h-0.5 -translate-y-1/2 -z-10 
+                                    bg-slate-200"></div>
+                                                            </li>
+                                                        <li class="relative flex-1 opacity-50">
+                                <button 
+                                    type="button"
+                                    @click="goToStep(4)"
+                                    :disabled="4 > step"
+                                    class="flex flex-col items-center gap-2 group"
+                                    disabled
+                                >
+                                    <span class="relative flex h-11 w-11 items-center justify-center rounded-full transition-all duration-300 
+                                        bg-slate-100 text-slate-400 group-hover:bg-slate-200">
+                                                                                    <span class="text-sm font-bold">4</span>
+                                                                            </span>
+                                    <span class="text-xs font-medium text-center hidden sm:block 
+                                        text-slate-400">
+                                                                                        Plugin
+                                                                                    </span>
+                                </button>
+                                                                <div class="hidden sm:block absolute top-5 left-1/2 w-full h-0.5 -translate-y-1/2 -z-10 
+                                    bg-slate-200"></div>
+                                                            </li>
+                                                        <li class="relative flex-1 opacity-50">
+                                <button 
+                                    type="button"
+                                    @click="goToStep(5)"
+                                    :disabled="5 > step"
+                                    class="flex flex-col items-center gap-2 group"
+                                    disabled
+                                >
+                                    <span class="relative flex h-11 w-11 items-center justify-center rounded-full transition-all duration-300 
+                                        bg-slate-100 text-slate-400 group-hover:bg-slate-200">
+                                                                                    <span class="text-sm font-bold">5</span>
+                                                                            </span>
+                                    <span class="text-xs font-medium text-center hidden sm:block 
+                                        text-slate-400">
+                                                                                        Admin
+                                                                                    </span>
+                                </button>
+                                                                <div class="hidden sm:block absolute top-5 left-1/2 w-full h-0.5 -translate-y-1/2 -z-10 
+                                    bg-slate-200"></div>
+                                                            </li>
+                                                        <li class="relative  opacity-50">
+                                <button 
+                                    type="button"
+                                    @click="goToStep(6)"
+                                    :disabled="6 > step"
+                                    class="flex flex-col items-center gap-2 group"
+                                    disabled
+                                >
+                                    <span class="relative flex h-11 w-11 items-center justify-center rounded-full transition-all duration-300 
+                                        bg-slate-100 text-slate-400 group-hover:bg-slate-200">
+                                                                                    <span class="text-sm font-bold">6</span>
+                                                                            </span>
+                                    <span class="text-xs font-medium text-center hidden sm:block 
+                                        text-slate-400">
+                                                                                        Konfirmasi
+                                                                                    </span>
+                                </button>
+                                                            </li>
+                                                    </ol>
+                    </nav>
+                </div>
+
+                <!-- Form Content -->
+                <div class="bg-white rounded-2xl shadow-soft border border-slate-200 p-6 sm:p-8 step-enter relative overflow-hidden">
+                    <!-- Decorative corner -->
+                    <div class="absolute top-0 left-0 w-16 h-16 bg-gradient-to-br from-sky-50 to-transparent rounded-bl-full"></div>
+                    
+                    
+                                        <!-- STEP 2: Document Upload -->
+                    <div x-show="step === 2" x-transition:enter="step-enter">
+                        <div class="flex items-center gap-4 mb-2">
+                            <div class="w-12 h-12 bg-gradient-to-br from-sky-400 to-sky-600 rounded-xl flex items-center justify-center shadow-lg">
+                                <i class="fas fa-file-upload text-white text-xl"></i>
+                            </div>
+                            <div>
+                                <h2 class="text-2xl font-bold text-slate-800">UPLOAD DOKUMEN</h2>
+                                <p class="text-slate-500 text-sm">Langkah 2 dari 6</p>
+                            </div>
+                        </div>
+                        <p class="text-slate-500 mb-6 ml-1">Unggah dokumen pendukung untuk verifikasi institusi</p>
+                        
+                        <form method="POST" action="http://127.0.0.1:8000/register-foundation/step2" id="step2-form" enctype="multipart/form-data">
+                            <input type="hidden" name="_token" value="OkYqwjRwJzJUHKpXkIWvHdZvVlT1bocCePCZS9LN" autocomplete="off">                            
+                            <!-- SK Pendirian Yayasan (Conditional) -->
+                                                        
+                            <!-- NPSN/Izin Operasional -->
+                            <div class="mb-6">
+                                <label class="block text-sm font-semibold text-gray-700 mb-2">
+                                    NPSN / Izin Operasional
+                                </label>
+                                <div 
+                                    class="upload-zone rounded-xl p-8 text-center cursor-pointer"
+                                    onclick="document.getElementById('npsn_document').click()"
+                                >
+                                    <input 
+                                        type="file" 
+                                        name="npsn_document" 
+                                        id="npsn_document"
+                                        accept=".pdf,.jpg,.jpeg,.png"
+                                        class="hidden"
+                                        onchange="handleFileSelect(this, 'npsn_document')"
+                                    >
+                                    <div id="preview-npsn_document">
+                                        <i class="fas fa-file-contract text-4xl text-gray-400 mb-3"></i>
+                                        <p class="text-sm font-medium text-gray-700">Klik atau drag file di sini</p>
+                                        <p class="text-xs text-gray-400 mt-1">PDF, JPG, PNG - Maksimal 5MB</p>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <!-- Logo -->
+                            <div class="mb-6">
+                                <label class="block text-sm font-semibold text-gray-700 mb-2">
+                                    Logo Sekolah
+                                </label>
+                                <div 
+                                    class="upload-zone rounded-xl p-8 text-center cursor-pointer"
+                                    onclick="document.getElementById('logo').click()"
+                                >
+                                    <input 
+                                        type="file" 
+                                        name="logo" 
+                                        id="logo"
+                                        accept=".jpg,.jpeg,.png"
+                                        class="hidden"
+                                        onchange="handleFileSelect(this, 'logo')"
+                                    >
+                                    <div id="preview-logo">
+                                        <i class="fas fa-image text-4xl text-gray-400 mb-3"></i>
+                                        <p class="text-sm font-medium text-gray-700">Klik atau drag gambar di sini</p>
+                                        <p class="text-xs text-gray-400 mt-1">JPG, PNG - Minimal 200x200px - Maksimal 2MB</p>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <!-- Building Photo -->
+                            <div class="mb-6">
+                                <label class="block text-sm font-semibold text-gray-700 mb-2">
+                                    Foto Gedung Sekolah
+                                </label>
+                                <div 
+                                    class="upload-zone rounded-xl p-8 text-center cursor-pointer"
+                                    onclick="document.getElementById('building_photo').click()"
+                                >
+                                    <input 
+                                        type="file" 
+                                        name="building_photo" 
+                                        id="building_photo"
+                                        accept=".jpg,.jpeg,.png"
+                                        class="hidden"
+                                        onchange="handleFileSelect(this, 'building_photo')"
+                                    >
+                                    <div id="preview-building_photo">
+                                        <i class="fas fa-building text-4xl text-gray-400 mb-3"></i>
+                                        <p class="text-sm font-medium text-gray-700">Klik atau drag gambar di sini</p>
+                                        <p class="text-xs text-gray-400 mt-1">JPG, PNG - Direkomendasikan 16:9 - Maksimal 5MB</p>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <!-- KTP -->
+                            <div class="mb-6">
+                                <label class="block text-sm font-semibold text-gray-700 mb-2">
+                                    KTP Penanggung Jawab <span class="text-red-500">*</span>
+                                </label>
+                                <div 
+                                    class="upload-zone rounded-xl p-8 text-center cursor-pointer"
+                                    onclick="document.getElementById('ktp').click()"
+                                >
+                                    <input 
+                                        type="file" 
+                                        name="ktp" 
+                                        id="ktp"
+                                        accept=".pdf,.jpg,.jpeg,.png"
+                                        class="hidden"
+                                        onchange="handleFileSelect(this, 'ktp')"
+                                    >
+                                    <div id="preview-ktp">
+                                        <i class="fas fa-id-card text-4xl text-gray-400 mb-3"></i>
+                                        <p class="text-sm font-medium text-gray-700">Klik atau drag file di sini</p>
+                                        <p class="text-xs text-gray-400 mt-1">PDF, JPG, PNG - Maksimal 2MB</p>
+                                    </div>
+                                </div>
+                                                            </div>
+                            
+                            <!-- Navigation Buttons -->
+                            <div class="flex justify-between items-center mt-8 pt-6 border-t border-slate-100">
+                                <button 
+                                    type="button"
+                                    onclick="window.location.href='http://127.0.0.1:8000/register-foundation/step1'"
+                                    class="px-6 py-3 rounded-xl border-2 border-slate-200 text-slate-600 font-medium hover:bg-slate-50 hover:border-slate-300 transition-all duration-200 flex items-center gap-2"
+                                >
+                                    <i class="fas fa-arrow-left"></i>
+                                    <span>Kembali</span>
+                                </button>
+                                <button 
+                                    type="submit"
+                                    class="btn-shine px-8 py-3.5 rounded-xl bg-gradient-to-r from-sky-500 to-sky-600 text-white font-semibold shadow-lg hover:shadow-xl hover:from-sky-400 hover:to-sky-500 transition-all duration-300 flex items-center gap-2"
+                                >
+                                    <span>Lanjutkan</span>
+                                    <i class="fas fa-arrow-right"></i>
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+                    
+                    
+                    
+                    
+                    
+                </div>
+            </div>
+
+            <!-- Right Side - Sticky Summary -->
+            <div class="w-full lg:w-80">
+                <div class="sticky-summary bg-white rounded-2xl shadow-soft border border-slate-200 p-6 overflow-hidden relative">
+                    <!-- Decorative -->
+                    <div class="absolute top-0 right-0 w-24 h-24 bg-gradient-to-br from-sky-100 to-transparent rounded-bl-full"></div>
+                    
+                    <h3 class="font-bold text-slate-800 mb-5 flex items-center gap-2 relative z-10">
+                        <div class="w-8 h-8 bg-gradient-to-br from-sky-400 to-sky-600 rounded-lg flex items-center justify-center">
+                            <i class="fas fa-receipt text-white text-sm"></i>
+                        </div>
+                        Ringkasan Biaya
+                    </h3>
+                    
+                    <!-- Plan -->
+                    <div class="mb-4 pb-4 border-b border-slate-100">
+                        <div class="flex justify-between items-center mb-2">
+                            <span class="text-sm text-slate-500">Paket</span>
+                            <span class="text-sm font-semibold text-slate-800" id="summary-plan-name">
+                                Belum dipilih
+                            </span>
+                        </div>
+                        <div class="flex justify-between items-center">
+                            <span class="text-xs text-slate-400">Harga paket</span>
+                            <span class="text-sm font-bold text-sky-600 price-animate" id="summary-plan-price">
+                                Rp0
+                            </span>
+                        </div>
+                    </div>
+                    
+                    <!-- Plugins -->
+                    <div class="mb-4 pb-4 border-b border-gray-100" id="plugins-section" style="display:none">
+                        <div class="flex justify-between items-center mb-2">
+                            <span class="text-sm text-gray-500">Plugin (<span id="plugin-count">0</span>)</span>
+                        </div>
+                                                <ul class="space-y-2 mb-2" id="plugins-list">
+                            <li class="flex justify-between text-xs text-gray-400 italic" id="no-plugins-message">
+                                <span>Belum ada plugin dipilih</span>
+                                <span>-</span>
+                            </li>
+                        </ul>
+                                                                    </div>
+                    
+                    <!-- Subtotal -->
+                    <div class="mb-2">
+                        <div class="flex justify-between text-sm">
+                            <span class="text-slate-500">Subtotal</span>
+                            <span class="font-medium text-slate-800" id="summary-subtotal">
+                                Rp0
+                            </span>
+                        </div>
+                    </div>
+                    
+                    <!-- Tax -->
+                    <div class="mb-4">
+                        <div class="flex justify-between text-sm">
+                            <span class="text-slate-500">PPN (10%)</span>
+                            <span class="font-medium text-slate-800" id="summary-tax">
+                                Rp0
+                            </span>
+                        </div>
+                    </div>
+                    
+                    <!-- Total -->
+                    <div class="bg-gradient-to-r from-sky-50 to-sky-100 rounded-xl p-4 border border-sky-100">
+                        <div class="flex justify-between items-center">
+                            <span class="font-semibold text-slate-800">Total per bulan</span>
+                            <span class="text-2xl font-bold text-sky-600 price-animate" id="summary-total">
+                                Rp0
+                            </span>
+                        </div>
+                    </div>
+                    
+                    <!-- Support -->
+                    <div class="mt-5 pt-4 border-t border-slate-100">
+                        <p class="text-xs text-slate-500 text-center flex items-center justify-center gap-2">
+                            <div class="w-6 h-6 bg-slate-100 rounded-full flex items-center justify-center">
+                                <i class="fas fa-headset text-slate-400 text-xs"></i>
+                            </div>
+                            Butuh bantuan? <a href="#" class="text-sky-600 hover:underline font-medium">Hubungi kami</a>
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- JavaScript -->
+    <script>
+        // Indonesian Provinces Data
+        const provinces = [
+            { id: '11', name: 'Aceh' },
+            { id: '12', name: 'Sumatera Utara' },
+            { id: '13', name: 'Sumatera Barat' },
+            { id: '14', name: 'Riau' },
+            { id: '15', name: 'Jambi' },
+            { id: '16', name: 'Sumatera Selatan' },
+            { id: '17', name: 'Bengkulu' },
+            { id: '18', name: 'Lampung' },
+            { id: '19', name: 'Kepulauan Bangka Belitung' },
+            { id: '21', name: 'Kepulauan Riau' },
+            { id: '31', name: 'DKI Jakarta' },
+            { id: '32', name: 'Jawa Barat' },
+            { id: '33', name: 'Jawa Tengah' },
+            { id: '34', name: 'DI Yogyakarta' },
+            { id: '35', name: 'Jawa Timur' },
+            { id: '36', name: 'Banten' },
+            { id: '51', name: 'Bali' },
+            { id: '52', name: 'Nusa Tenggara Barat' },
+            { id: '53', name: 'Nusa Tenggara Timur' },
+            { id: '61', name: 'Kalimantan Barat' },
+            { id: '62', name: 'Kalimantan Tengah' },
+            { id: '63', name: 'Kalimantan Selatan' },
+            { id: '64', name: 'Kalimantan Timur' },
+            { id: '65', name: 'Kalimantan Utara' },
+            { id: '71', name: 'Sulawesi Utara' },
+            { id: '72', name: 'Sulawesi Tengah' },
+            { id: '73', name: 'Sulawesi Selatan' },
+            { id: '74', name: 'Sulawesi Tenggara' },
+            { id: '75', name: 'Gorontalo' },
+            { id: '76', name: 'Sulawesi Barat' },
+            { id: '81', name: 'Maluku' },
+            { id: '82', name: 'Maluku Utara' },
+            { id: '91', name: 'Papua Barat' },
+            { id: '94', name: 'Papua' },
+            { id: '95', name: 'Papua Selatan' },
+            { id: '96', name: 'Papua Tengah' },
+            { id: '97', name: 'Papua Pegunungan' },
+        ];
+
+        // Sample regencies by province
+        const regencies = {
+            '11': [
+                { id: '1101', name: 'Kabupaten Simeulue' },
+                { id: '1102', name: 'Kabupaten Aceh Singkil' },
+                { id: '1103', name: 'Kabupaten Aceh Selatan' },
+                { id: '1104', name: 'Kabupaten Aceh Timur' },
+                { id: '1105', name: 'Kabupaten Aceh Tengah' },
+                { id: '1171', name: 'Kota Banda Aceh' },
+                { id: '1172', name: 'Kota Sabang' },
+            ],
+            '32': [
+                { id: '3201', name: 'Kabupaten Bogor' },
+                { id: '3202', name: 'Kabupaten Cianjur' },
+                { id: '3203', name: 'Kabupaten Bandung' },
+                { id: '3204', name: 'Kabupaten Sumedang' },
+                { id: '3205', name: 'Kabupaten Garrett' },
+                { id: '3273', name: 'Kota Bandung' },
+                { id: '3274', name: 'Kota Bekasi' },
+                { id: '3275', name: 'Kota Depok' },
+            ],
+            '33': [
+                { id: '3301', name: 'Kabupaten Cilacap' },
+                { id: '3302', name: 'Kabupaten Banyumas' },
+                { id: '3303', name: 'Kabupaten Purbalingga' },
+                { id: '3304', name: 'Kabupaten Banjarnegara' },
+                { id: '3371', name: 'Kota Semarang' },
+                { id: '3372', name: 'Kota Surakarta' },
+                { id: '3373', name: 'Kota Salatiga' },
+            ],
+            '35': [
+                { id: '3501', name: 'Kabupaten Pacitan' },
+                { id: '3502', name: 'Kabupaten Ponorogo' },
+                { id: '3503', name: 'Kabupaten Trenggalek' },
+                { id: '3504', name: 'Kabupaten Tulungagung' },
+                { id: '3571', name: 'Kota Surabaya' },
+                { id: '3572', name: 'Kota Malang' },
+                { id: '3573', name: 'Kota Probolinggo' },
+            ],
+            // Add more as needed
+        };
+
+        // Registration Wizard Alpine.js Component
+        function registrationWizard() {
+            return {
+                step: 2,
+                selectedPlan: 1,
+                selectedPlugins: [],
+                planPrice: 0,
+                pluginTotal: 0,
+                
+                init() {
+                    // Load data from session storage for auto-save
+                    this.loadFromStorage();
+                    
+                    // Setup province dropdown
+                    this.setupProvinceDropdown();
+                    
+                    // Auto-save on form changes
+                    this.setupAutoSave();
+                    
+                    // Load plugin details if there are selected plugins (for step 4, 5, 6)
+                    if (this.selectedPlugins && this.selectedPlugins.length > 0) {
+                        this.loadPluginDetailsOnInit();
+                    }
+                },
+                
+                async loadPluginDetailsOnInit() {
+                    // Fetch plugin details from database
+                    try {
+                        const params = this.selectedPlugins.map(id => `plugin_ids[]=${id}`).join('&');
+                        const url = `/register-foundation/plugins?${params}`;
+                        const response = await fetch(url);
+                        const data = await response.json();
+                        
+                        const pluginsSection = document.getElementById('plugins-section');
+                        const pluginCountEl = document.getElementById('plugin-count');
+                        
+                        if (pluginCountEl) {
+                            pluginCountEl.textContent = this.selectedPlugins.length;
+                        }
+                        
+                        if (data.plugins && data.plugins.length > 0) {
+                            // Update plugin total from database
+                            this.pluginTotal = data.total;
+                            
+                            // Update plugins list in summary
+                            const pluginsList = document.getElementById('plugins-list');
+                            const noPluginsMsg = document.getElementById('no-plugins-message');
+                            
+                            if (pluginsList) {
+                                // Remove "no plugins" message if exists
+                                if (noPluginsMsg) {
+                                    noPluginsMsg.remove();
+                                }
+                                let html = '';
+                                data.plugins.forEach(plugin => {
+                                    html += `<li class="flex justify-between text-xs">
+                                        <span class="text-gray-600">${plugin.name}</span>
+                                        <span class="font-medium">${plugin.formatted_price}</span>
+                                    </li>`;
+                                });
+                                pluginsList.innerHTML = html;
+                            }
+                            
+                            if (pluginsSection) {
+                                pluginsSection.style.display = 'block';
+                            }
+                            
+                            // Update summary prices
+                            updateSummaryPrices(this.planPrice);
+                        } else {
+                            if (pluginsSection) {
+                                pluginsSection.style.display = 'none';
+                            }
+                        }
+                    } catch (error) {
+                        console.error('Error loading plugin details:', error);
+                    }
+                },
+                
+                getProvinces() {
+                    return provinces;
+                },
+                
+                setupProvinceDropdown() {
+                    const provinceSelect = document.getElementById('province');
+                    if (provinceSelect) {
+                        // Populate provinces if empty
+                        if (provinceSelect.options.length <= 1) {
+                            provinces.forEach(province => {
+                                const option = document.createElement('option');
+                                option.value = province.id;
+                                option.textContent = province.name;
+                                provinceSelect.appendChild(option);
+                            });
+                        }
+                        
+                        // Handle province change
+                        provinceSelect.addEventListener('change', (e) => {
+                            this.loadRegencies(e.target.value);
+                        });
+                    }
+                },
+                
+                loadRegencies(provinceId) {
+                    const regencySelect = document.getElementById('regency');
+                    if (!regencySelect) return;
+                    
+                    // Clear existing options
+                    regencySelect.innerHTML = '<option value="">Pilih Kabupaten/Kota</option>';
+                    
+                    if (!provinceId) return;
+                    
+                    // Show loading indicator
+                    const originalOptions = regencySelect.innerHTML;
+                    regencySelect.innerHTML = '<option value="">Memuat data...</option>';
+                    
+                    // Fetch regencies from server
+                    fetch(`/register-foundation/regencies?province_id=${encodeURIComponent(provinceId)}`)
+                        .then(response => response.json())
+                        .then(data => {
+                            regencySelect.innerHTML = '<option value="">Pilih Kabupaten/Kota</option>';
+                            
+                            if (data && data.length > 0) {
+                                data.forEach(regency => {
+                                    const option = document.createElement('option');
+                                    option.value = regency.id;
+                                    option.textContent = regency.name;
+                                    regencySelect.appendChild(option);
+                                });
+                            } else {
+                                // Fallback to local data if no server data
+                                this.loadLocalRegencies(provinceId);
+                            }
+                        })
+                        .catch(error => {
+                            console.error('Error loading regencies:', error);
+                            // Fallback to local data
+                            this.loadLocalRegencies(provinceId);
+                        });
+                },
+                
+                loadLocalRegencies(provinceId) {
+                    const regencySelect = document.getElementById('regency');
+                    if (!regencySelect) return;
+                    
+                    regencySelect.innerHTML = '<option value="">Pilih Kabupaten/Kota</option>';
+                    
+                    if (provinceId && regencies[provinceId]) {
+                        regencies[provinceId].forEach(regency => {
+                            const option = document.createElement('option');
+                            option.value = regency.id;
+                            option.textContent = regency.name;
+                            regencySelect.appendChild(option);
+                        });
+                    }
+                },
+                
+                setupAutoSave() {
+                    // Save form data to localStorage on change
+                    const form = document.querySelector('form');
+                    if (form) {
+                        form.addEventListener('change', () => {
+                            this.saveToStorage();
+                        });
+                    }
+                },
+                
+                saveToStorage() {
+                    const form = document.querySelector('form');
+                    if (form) {
+                        const formData = new FormData(form);
+                        const data = {};
+                        formData.forEach((value, key) => {
+                            data[key] = value;
+                        });
+                        localStorage.setItem('registration_step2', JSON.stringify(data));
+                    }
+                },
+                
+                loadFromStorage() {
+                    const saved = localStorage.getItem('registration_step2');
+                    if (saved) {
+                        try {
+                            const data = JSON.parse(saved);
+                            Object.keys(data).forEach(key => {
+                                const input = document.querySelector(`[name="${key}"]`);
+                                if (input && input.type !== 'checkbox' && input.type !== 'radio') {
+                                    input.value = data[key];
+                                }
+                            });
+                        } catch (e) {
+                            console.error('Error loading saved data:', e);
+                        }
+                    }
+                },
+                
+                goToStep(targetStep) {
+                    if (targetStep < this.step) {
+                        window.location.href = `/register-foundation/step${targetStep}`;
+                    }
+                },
+                
+                calculateTotal() {
+                    let total = this.planPrice + this.pluginTotal;
+                    
+                    // Apply 10% discount if 3+ plugins
+                    if (this.selectedPlugins.length >= 3) {
+                        total = total * 0.9;
+                    }
+                    
+                    return total;
+                },
+                
+                calculateTax() {
+                    return this.calculateTotal() * 0.1;
+                },
+                
+                calculateGrandTotal() {
+                    return this.calculateTotal() * 1.1;
+                }
+            };
+        }
+
+        // File Upload Handlers
+        function handleFileSelect(input, fieldName) {
+            const file = input.files[0];
+            if (!file) return;
+            
+            // Validate file size
+            const maxSize = getMaxSize(fieldName);
+            if (file.size > maxSize) {
+                alert('File terlalu besar. Maksimal ' + (maxSize / 1024 / 1024) + 'MB');
+                input.value = '';
+                return;
+            }
+            
+            // Validate file type
+            const allowedTypes = getAllowedTypes(fieldName);
+            const fileType = file.name.split('.').pop().toLowerCase();
+            if (!allowedTypes.includes(fileType)) {
+                alert('Tipe file tidak valid. Allowed: ' + allowedTypes.join(', '));
+                input.value = '';
+                return;
+            }
+            
+            // Show preview
+            showPreview(fieldName, file);
+        }
+
+        function handleDrop(event, fieldName) {
+            event.preventDefault();
+            const file = event.dataTransfer.files[0];
+            if (file) {
+                const input = document.getElementById(fieldName);
+                if (input) {
+                    const dt = new DataTransfer();
+                    dt.items.add(file);
+                    input.files = dt.files;
+                    handleFileSelect(input, fieldName);
+                }
+            }
+        }
+
+        function getMaxSize(fieldName) {
+            const sizes = {
+                'sk_pendirian': 10 * 1024 * 1024,  // 10MB
+                'npsn_document': 5 * 1024 * 1024,   // 5MB
+                'logo': 2 * 1024 * 1024,           // 2MB
+                'building_photo': 5 * 1024 * 1024, // 5MB
+                'ktp': 2 * 1024 * 1024,            // 2MB
+            };
+            return sizes[fieldName] || 5 * 1024 * 1024;
+        }
+
+        function getAllowedTypes(fieldName) {
+            const types = {
+                'sk_pendirian': ['pdf'],
+                'npsn_document': ['pdf', 'jpg', 'jpeg', 'png'],
+                'logo': ['jpg', 'jpeg', 'png'],
+                'building_photo': ['jpg', 'jpeg', 'png'],
+                'ktp': ['pdf', 'jpg', 'jpeg', 'png'],
+            };
+            return types[fieldName] || ['pdf', 'jpg', 'jpeg', 'png'];
+        }
+
+        function showPreview(fieldName, file) {
+            const previewContainer = document.getElementById(`preview-${fieldName}`);
+            if (!previewContainer) return;
+            
+            const isImage = file.type.startsWith('image/');
+            
+            if (isImage) {
+                const reader = new FileReader();
+                reader.onload = (e) => {
+                    previewContainer.innerHTML = `
+                        <div class="relative inline-block">
+                            <img src="${e.target.result}" alt="Preview" class="max-h-32 rounded-lg mx-auto">
+                            <button type="button" onclick="removeFile('${fieldName}')" class="absolute -top-2 -right-2 bg-red-500 text-white rounded-full w-6 h-6 flex items-center justify-center text-xs hover:bg-red-600">
+                                <i class="fas fa-times"></i>
+                            </button>
+                        </div>
+                        <p class="text-xs text-gray-500 mt-2">${file.name}</p>
+                    `;
+                };
+                reader.readAsDataURL(file);
+            } else {
+                const icon = fieldName === 'sk_pendirian' ? 'fa-file-pdf text-red-500' : 'fa-file text-gray-500';
+                previewContainer.innerHTML = `
+                    <div class="relative inline-block">
+                        <i class="fas ${icon} text-4xl mb-3"></i>
+                        <button type="button" onclick="removeFile('${fieldName}')" class="absolute -top-2 -right-2 bg-red-500 text-white rounded-full w-6 h-6 flex items-center justify-center text-xs hover:bg-red-600">
+                            <i class="fas fa-times"></i>
+                        </button>
+                    </div>
+                    <p class="text-xs text-gray-500 mt-2">${file.name}</p>
+                    <p class="text-xs text-gray-400">${(file.size / 1024).toFixed(1)} KB</p>
+                `;
+            }
+        }
+
+        function removeFile(fieldName) {
+            const input = document.getElementById(fieldName);
+            if (input) input.value = '';
+            
+            const previewContainer = document.getElementById(`preview-${fieldName}`);
+            if (previewContainer) {
+                const defaultContent = getDefaultContent(fieldName);
+                previewContainer.innerHTML = defaultContent;
+            }
+        }
+
+        function getDefaultContent(fieldName) {
+            const defaults = {
+                'sk_pendirian': '<i class="fas fa-file-pdf text-4xl text-red-500 mb-3"></i><p class="text-sm font-medium text-gray-700">Klik atau drag file PDF di sini</p><p class="text-xs text-gray-400 mt-1">Maksimal 10MB</p>',
+                'npsn_document': '<i class="fas fa-file-contract text-4xl text-gray-400 mb-3"></i><p class="text-sm font-medium text-gray-700">Klik atau drag file di sini</p><p class="text-xs text-gray-400 mt-1">PDF, JPG, PNG - Maksimal 5MB</p>',
+                'logo': '<i class="fas fa-image text-4xl text-gray-400 mb-3"></i><p class="text-sm font-medium text-gray-700">Klik atau drag gambar di sini</p><p class="text-xs text-gray-400 mt-1">JPG, PNG - Minimal 200x200px - Maksimal 2MB</p>',
+                'building_photo': '<i class="fas fa-building text-4xl text-gray-400 mb-3"></i><p class="text-sm font-medium text-gray-700">Klik atau drag gambar di sini</p><p class="text-xs text-gray-400 mt-1">JPG, PNG - Direkomendasikan 16:9 - Maksimal 5MB</p>',
+                'ktp': '<i class="fas fa-id-card text-4xl text-gray-400 mb-3"></i><p class="text-sm font-medium text-gray-700">Klik atau drag file di sini</p><p class="text-xs text-gray-400 mt-1">PDF, JPG, PNG - Maksimal 2MB</p>',
+            };
+            return defaults[fieldName] || '';
+        }
+
+        // Password Strength
+        function updatePasswordStrength(password) {
+            let strength = 0;
+            
+            if (password.length >= 8) strength++;
+            if (/[A-Z]/.test(password)) strength++;
+            if (/[a-z]/.test(password)) strength++;
+            if (/[0-9]/.test(password)) strength++;
+            if (/[@$!%*?&]/.test(password)) strength++;
+            
+            const alpineComponent = Alpine.$data(document.querySelector('[x-data="registrationWizard()"]'));
+            if (alpineComponent) {
+                alpineComponent.strength = strength;
+            }
+            
+            // Update visual strength bars
+            const bars = document.querySelectorAll('.strength-bar');
+            bars.forEach((bar, index) => {
+                if (index < strength) {
+                    if (strength >= 4) {
+                        bar.classList.remove('bg-amber-500', 'bg-gray-200');
+                        bar.classList.add('bg-success-500');
+                    } else if (strength >= 2) {
+                        bar.classList.remove('bg-success-500', 'bg-gray-200');
+                        bar.classList.add('bg-amber-500');
+                    }
+                } else {
+                    bar.classList.remove('bg-success-500', 'bg-amber-500');
+                    bar.classList.add('bg-gray-200');
+                }
+            });
+        }
+
+        // Check Email Unique
+        let emailCheckTimeout;
+        function checkEmailUnique(email) {
+            if (!email || !email.includes('@')) return;
+            
+            clearTimeout(emailCheckTimeout);
+            const statusEl = document.getElementById('email-status');
+            
+            emailCheckTimeout = setTimeout(() => {
+                fetch(`http://127.0.0.1:8000/register-foundation/check-email?email=${encodeURIComponent(email)}`)
+                    .then(res => res.json())
+                    .then(data => {
+                        if (data.exists) {
+                            statusEl.innerHTML = '<span class="text-red-500"><i class="fas fa-times-circle"></i> Email sudah terdaftar</span>';
+                        } else {
+                            statusEl.innerHTML = '<span class="text-success-600"><i class="fas fa-check-circle"></i> Email tersedia</span>';
+                        }
+                    })
+                    .catch(() => {
+                        statusEl.innerHTML = '';
+                    });
+            }, 500);
+        }
+
+        // Update selected plan in summary
+        function updateSelectedPlan(planId, planName, planPrice) {
+            document.getElementById('summary-plan-name').textContent = planName;
+            document.getElementById('summary-plan-price').textContent = 'Rp' + formatNumber(planPrice);
+            updateSummaryPrices(planPrice);
+        }
+
+        // Toggle plugin
+        function togglePlugin(pluginId, pluginPrice) {
+            const alpineComponent = Alpine.$data(document.querySelector('[x-data="registrationWizard()"]'));
+            if (!alpineComponent) return;
+            
+            const index = alpineComponent.selectedPlugins.indexOf(pluginId);
+            if (index > -1) {
+                alpineComponent.selectedPlugins.splice(index, 1);
+                alpineComponent.pluginTotal -= pluginPrice;
+            } else {
+                alpineComponent.selectedPlugins.push(pluginId);
+                alpineComponent.pluginTotal += pluginPrice;
+            }
+            
+            // Fetch fresh plugin data from database and update summary
+            fetchPluginDetailsAndUpdateSummary(alpineComponent.selectedPlugins);
+        }
+
+        // Fetch plugin details from database and update summary
+        async function fetchPluginDetailsAndUpdateSummary(pluginIds) {
+            const alpineComponent = Alpine.$data(document.querySelector('[x-data="registrationWizard()"]'));
+            if (!alpineComponent) return;
+            
+            // Update plugins list in summary
+            const pluginsList = document.getElementById('plugins-list');
+            const pluginsSection = document.getElementById('plugins-section');
+            const pluginCountEl = document.getElementById('plugin-count');
+            const noPluginsMsg = document.getElementById('no-plugins-message');
+            
+            if (pluginCountEl) {
+                pluginCountEl.textContent = pluginIds.length;
+            }
+            
+            if (pluginIds.length === 0) {
+                if (pluginsSection) {
+                    pluginsSection.style.display = 'none';
+                }
+                updateSummaryPrices(alpineComponent.planPrice);
+                return;
+            }
+            
+            try {
+                // Build query string with multiple plugin_ids
+                const params = pluginIds.map(id => `plugin_ids[]=${id}`).join('&');
+                const url = `/register-foundation/plugins?${params}`;
+                const response = await fetch(url);
+                const data = await response.json();
+                
+                if (pluginsSection) {
+                    pluginsSection.style.display = 'block';
+                }
+                
+                if (data.plugins && data.plugins.length > 0) {
+                    // Update plugin total from database (more accurate)
+                    alpineComponent.pluginTotal = data.total;
+                    
+                    // Update plugins list HTML
+                    if (pluginsList) {
+                        // Remove "no plugins" message if exists
+                        if (noPluginsMsg) {
+                            noPluginsMsg.remove();
+                        }
+                        let html = '';
+                        data.plugins.forEach(plugin => {
+                            html += `<li class="flex justify-between text-xs">
+                                <span class="text-gray-600">${plugin.name}</span>
+                                <span class="font-medium">${plugin.formatted_price}</span>
+                            </li>`;
+                        });
+                        pluginsList.innerHTML = html;
+                    }
+                }
+                
+                // Update summary prices with new total
+                updateSummaryPrices(alpineComponent.planPrice);
+                
+            } catch (error) {
+                console.error('Error fetching plugin details:', error);
+                // Fallback: use local calculation
+                updateSummaryPrices(alpineComponent.planPrice);
+            }
+        }
+
+        // Update summary prices
+        function updateSummaryPrices(planPrice) {
+            const alpineComponent = Alpine.$data(document.querySelector('[x-data="registrationWizard()"]'));
+            if (!alpineComponent) return;
+            
+            let subtotal = planPrice + alpineComponent.pluginTotal;
+            let discount = 0;
+            let discountElement = document.getElementById('discount-section');
+            let discountAmountElement = document.getElementById('discount-amount');
+            
+            if (alpineComponent.selectedPlugins.length >= 3) {
+                discount = subtotal * 0.1;
+                subtotal = subtotal - discount;
+                if (discountElement) discountElement.style.display = 'flex';
+                if (discountAmountElement) discountAmountElement.textContent = '-Rp' + formatNumber(discount);
+            } else {
+                if (discountElement) discountElement.style.display = 'none';
+            }
+            
+            const tax = subtotal * 0.1;
+            const total = subtotal + tax;
+            
+            if (document.getElementById('plugins-section')) {
+                document.getElementById('plugins-section').style.display = alpineComponent.pluginTotal > 0 ? 'block' : 'none';
+            }
+            
+            document.getElementById('summary-subtotal').textContent = 'Rp' + formatNumber(subtotal);
+            document.getElementById('summary-tax').textContent = 'Rp' + formatNumber(tax);
+            document.getElementById('summary-total').textContent = 'Rp' + formatNumber(total);
+        }
+
+        // Format number
+        function formatNumber(num) {
+            return num.toString().replace(/\B(?=(\d{3})+(?!\d))/g, '.');
+        }
+
+        // Initialize province data on page load
+        document.addEventListener('DOMContentLoaded', function() {
+            const alpineComponent = Alpine.$data(document.querySelector('[x-data="registrationWizard()"]'));
+            if (alpineComponent) {
+                alpineComponent.setupProvinceDropdown();
+            }
+        });
+    </script>
+</body>
+</html>

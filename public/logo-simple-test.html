@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Logo Test - Yayasan Kemala Bhayangkari</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-100 min-h-screen">
+    <div class="container mx-auto p-8">
+        <h1 class="text-3xl font-bold mb-8 text-center">Logo Test - Yayasan Kemala Bhayangkari</h1>
+        
+        <div class="bg-white rounded-lg shadow-lg p-6 max-w-md mx-auto">
+            <h2 class="text-xl font-semibold mb-4">Foundation Logo</h2>
+            
+            <div class="flex items-center space-x-4 mb-6">
+                
+                <img src="/storage/uploads/foundations/1/logo.png" 
+                     alt="Yayasan Kemala Bhayangkari Logo" 
+                     class="w-12 h-12 rounded-lg object-cover shadow-lg"
+                     onerror="this.style.border='2px solid red'; this.alt='Logo Failed to Load';" 
+                     onload="this.style.border='2px solid green';" />
+                
+                
+                <div>
+                    <h3 class="font-bold text-lg">Yayasan Kemala Bhayangkari</h3>
+                    <p class="text-sm text-gray-600">Tenant: tenant-yayasan-kemala-bhayangkari</p>
+                </div>
+            </div>
+            
+            <div class="border-t pt-4">
+                <h3 class="font-semibold mb-2">Debug Info:</h3>
+                <ul class="text-sm space-y-1">
+                    <li><strong>Foundation Name:</strong> Yayasan Kemala Bhayangkari</li>
+                    <li><strong>Logo Path:</strong> /storage/uploads/foundations/1/logo.png</li>
+                    <li><strong>Full URL:</strong> http://yayasan-kemala-bhayangkari.localhost:8000/storage/uploads/foundations/1/logo.png</li>
+                    <li><strong>File Exists:</strong> YES</li>
+                </ul>
+            </div>
+            
+            
+            <div class="border-t pt-4">
+                <h3 class="font-semibold mb-2">Direct Image Test:</h3>
+                <img src="/storage/uploads/foundations/1/logo.png" 
+                     alt="Direct Logo Test" 
+                     class="w-full max-w-xs mx-auto rounded border"
+                     onerror="this.style.border='2px solid red'; this.alt='Direct Load Failed';" 
+                     onload="this.style.border='2px solid green';" />
+                <p class="text-xs text-center mt-2">Direct image URL: /storage/uploads/foundations/1/logo.png</p>
+            </div>
+            
+        </div>
+        
+        <div class="mt-8 text-center">
+            <a href="/dashboard" class="bg-blue-500 hover:bg-blue-600 text-white px-6 py-2 rounded-lg inline-block">
+                Go to Dashboard
+            </a>
+        </div>
+    </div>
+</body>
+</html>

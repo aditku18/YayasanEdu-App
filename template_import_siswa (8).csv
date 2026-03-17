@@ -1,0 +1,7 @@
+﻿nik,name,nis,nisn,gender,birth_place,birth_date,address,father_name,mother_name,guardian_name,parent_name,parent_phone,status,classroom_name
+"# NIK","Nama Lengkap *",NIS,NISN,"Jenis Kelamin *","Tempat Lahir","Tanggal Lahir",Alamat,"Nama Ayah","Nama Ibu","Nama Wali","Nama Kontak Utama","No. HP Orang Tua","Status *","Nama Kelas"
+"# 16 digit NIK (kosongkan jika belum ada)","# Nama lengkap sesuai akta — WAJIB DIISI","# Nomor Induk Siswa lokal","# Nomor Induk Siswa Nasional","# Isi: L (Laki-laki) atau P (Perempuan)","# Kota/Kabupaten tempat lahir","# Format: YYYY-MM-DD  contoh: 2008-05-20","# Alamat lengkap (jalan, RT/RW, kel, kec)","# Nama lengkap ayah","# Nama lengkap ibu","# Nama wali jika bukan orang tua (bolehkan kosong)","# Nama yang bisa dihubungi","# Contoh: 081234567890","# Aktif | Lulus | Pindah | Drop Out","# Nama kelas (opsional). Pilihan: X-TJKT1"
+"# 3201234567890001","# Ahmad Fauzi Ramadhan","# 2024001","# 0123456789","# L","# Bandung","# 2008-05-20","# Jl. Merdeka No. 10, RT 02/RW 03, Kel. Sukajadi, Kec. Sukajadi","# Fauzi Hidayat","# Siti Rahayu","# ","# Fauzi Hidayat","# 081234567890","# Aktif","# X-TJKT1"
+,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,

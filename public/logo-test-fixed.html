@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Logo Test - Fixed</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 40px; }
+        .logo-test { border: 2px solid #ccc; padding: 20px; text-align: center; }
+        .logo-test img { max-width: 200px; height: auto; }
+        .success { border-color: green; background: #f0fff0; }
+        .error { border-color: red; background: #fff0f0; }
+    </style>
+</head>
+<body>
+    <h1>Logo Access Test - Fixed Version</h1>
+    <div class="logo-test">
+        <h2>Testing Logo Display</h2>
+        <img src="/storage/logos/zp88zD0dsuagbhGV4hsDmswBFvzgDmBs0e2fDeLK.png" alt="Yayasan Logo" 
+             onerror="this.parentElement.className='logo-test error'; this.alt='Logo Failed to Load';" 
+             onload="this.parentElement.className='logo-test success';" />
+        <p><strong>Logo URL:</strong> /storage/logos/zp88zD0dsuagbhGV4hsDmswBFvzgDmBs0e2fDeLK.png</p>
+        <p><strong>Full URL:</strong> <a href="/storage/logos/zp88zD0dsuagbhGV4hsDmswBFvzgDmBs0e2fDeLK.png" target="_blank">/storage/logos/zp88zD0dsuagbhGV4hsDmswBFvzgDmBs0e2fDeLK.png</a></p>
+    </div>
+    
+    <h2>Debug Info</h2>
+    <ul>
+        <li>Database Logo Path: logos/zp88zD0dsuagbhGV4hsDmswBFvzgDmBs0e2fDeLK.png</li>
+        <li>Generated URL: /storage/logos/zp88zD0dsuagbhGV4hsDmswBFvzgDmBs0e2fDeLK.png</li>
+        <li>File Exists: YES</li>
+        <li>File Size: 100426 bytes</li>
+    </ul>
+</body>
+</html>

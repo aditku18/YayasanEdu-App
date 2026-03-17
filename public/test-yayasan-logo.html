@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Yayasan Logo Test</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 40px; }
+        .logo-test { border: 2px solid #ccc; padding: 20px; margin: 20px 0; text-align: center; }
+        .logo-test img { max-width: 300px; height: auto; }
+        .success { border-color: green; background: #f0fff0; }
+        .error { border-color: red; background: #fff0f0; }
+    </style>
+</head>
+<body>
+    <h1>Yayasan Logo Test</h1>
+    <div class="logo-test">
+        <h2>Yayasan Model Logo</h2>
+        <img src="/storage/logos/8VvX1YrZB5cc2grZiuaSYbRjOC69EtVeqohYsXNd.png" alt="Yayasan Logo" 
+             onerror="this.parentElement.className='logo-test error'; this.alt='Logo Failed to Load';" 
+             onload="this.parentElement.className='logo-test success';" />
+        <p><strong>URL:</strong> /storage/logos/8VvX1YrZB5cc2grZiuaSYbRjOC69EtVeqohYsXNd.png</p>
+    </div>
+    
+    <h2>Foundation Model Logos</h2>
+    <div class="logo-test">
+        <h3>Foundation: Yayasan Kemala Bhayangkari</h3>
+        <img src="/storage/uploads/foundations/1/logo.png" alt="Foundation Logo" 
+             onerror="this.parentElement.className='logo-test error'; this.alt='Logo Failed to Load';" 
+             onload="this.parentElement.className='logo-test success';" />
+        <p><strong>URL:</strong> /storage/uploads/foundations/1/logo.png</p>
+    </div>
+    <div class="logo-test">
+        <h3>Foundation: Yayasan Test Pending</h3>
+        <img src="/storage/uploads/foundations/test/logo.png" alt="Foundation Logo" 
+             onerror="this.parentElement.className='logo-test error'; this.alt='Logo Failed to Load';" 
+             onload="this.parentElement.className='logo-test success';" />
+        <p><strong>URL:</strong> /storage/uploads/foundations/test/logo.png</p>
+    </div>
+</body>
+</html>
